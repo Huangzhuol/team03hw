@@ -6,7 +6,7 @@ from lightning.pytorch import Trainer
 
 def import_data():
     # Load dataset
-    df = pd.read_csv("data/Latest_Data_Science_Salaries.csv")
+    df = pd.read_csv("./data/Latest_Data_Science_Salaries.csv")
     df = df.dropna(subset=["Salary in USD"])
     length_df=len(df)
     unique_job_titles = df["Job Title"].dropna().unique()
