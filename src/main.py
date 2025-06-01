@@ -8,7 +8,7 @@ import torch
 import numpy as np
 import os
 
-def import_data():
+def main():
     # Load and preprocess dataset
     os.makedirs("result", exist_ok=True)
     df = pd.read_csv("./data/salaries.csv")
@@ -134,9 +134,10 @@ def import_data():
     )
     tft.save_hyperparameters(ignore=["loss", "logging_metrics"])
 
-    trainer = Trainer(max_epochs=1, gradient_clip_val=0.1, enable_model_summary=False,log_every_n_steps=1)
+    trainer = Trainer(max_epochs=10, gradient_clip_val=0.1, enable_model_summary=False,log_every_n_steps=1)
     trainer.fit(tft, train_dataloaders=train_dataloader)
     
+    # Get weight csv
     raw_predictions= tft.predict(full_dataloader, mode="raw", return_x=True)
     raw_output = dict(raw_predictions.output._asdict())
     max_len = tft.hparams.max_encoder_length
@@ -157,8 +158,6 @@ def import_data():
         "Importance (%)": static_importance_values
     })
     static_df = static_df.sort_values(by="Importance (%)", ascending=False)
-
-    # Save to CSV
     static_df.to_csv("result/static_variable_importances.csv", index=False)
     print("Saved static variable importances to 'static_variable_importances.csv'")
 
@@ -172,7 +171,6 @@ def import_data():
         "Variable": encoder_variable_names,
         "Importance (%)": encoder_importance_values
     }).sort_values(by="Importance (%)", ascending=False)
-
     encoder_df.to_csv("result/encoder_variable_importances.csv", index=False)
     print("Saved encoder variable importances to 'encoder_variable_importances.csv'")
 
@@ -185,29 +183,28 @@ def import_data():
         "Variable": decoder_variable_names,
         "Importance (%)": decoder_importance_values
     }).sort_values(by="Importance (%)", ascending=False)
-
     decoder_df.to_csv("result/decoder_variable_importances.csv", index=False)
     print("Saved decoder variable importances to 'decoder_variable_importances.csv'")
 
-    # attention = interpretation["attention"]  
-    # attention_np = attention.detach().cpu().numpy()  # convert to numpy
-    # rows = []
-    # for batch_idx in range(attention_np.shape[0]):
-    #     for dec_step in range(attention_np.shape[1]):
-    #         for enc_step in range(attention_np.shape[2]):
-    #             rows.append({
-    #                 "batch": batch_idx,
-    #                 "decoder_step": dec_step,
-    #                 "encoder_step": enc_step,
-    #                 "attention_weight": attention_np[batch_idx, dec_step, enc_step]
-    #             })
+    if "attention" in interpretation:
+        attention = interpretation["attention"]
+        attention_np = attention.detach().cpu().numpy()  # shape: (encoder_length,)
 
-    # attention_df = pd.DataFrame(rows)
-    # attention_df.to_csv("result/attention_weights.csv", index=False)
-    # print("Saved attention weights to 'result/attention_weights.csv'")
+        encoder_steps = list(range(len(attention_np)))
+        attention_df = pd.DataFrame({
+            "Encoder Step": encoder_steps,
+            "Attention Weight": attention_np
+        })
+
+        attention_df.to_csv("result/attention_summary.csv", index=False)
+        print("Saved summary attention weights to 'result/attention_summary.csv'")
+    else:
+        print("No attention data found in interpretation.")
 
     # tft.plot_interpretation(interpretation)
     # plt.show()
+
+    # do prediction
     result = tft.predict(full_dataloader, mode="prediction", return_x=True)
     predictions = result[0]
     x = result[1]
@@ -236,10 +233,6 @@ def import_data():
     df_pred = future_df_filtered[["Job Title", "Experience Level", "Year", "Predicted Salary USD"]]
     df_pred.to_csv("result/TFT_Predictions.csv", index=False)
     print(df_pred.head())
-
-
-def main():
-    import_data()
 
 
 if __name__ == "__main__":
