@@ -12,3 +12,16 @@ class BasicInfoModel(BaseModel):
     ] = Field(..., description="data source")
     key: Union[str, int]       
     value: float
+
+class SalaryRecordModel(BaseModel):
+    job_title:          str
+    employment_type:    str
+    experience_level:   str
+    expertise_level:    str
+    salary:             int
+    salary_currency:    str
+    company_location:   str
+    salary_in_usd:      int
+    employee_residence: str
+    company_size:       str
+    year:               int
