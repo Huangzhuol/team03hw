@@ -38,7 +38,7 @@ async def get_single(dataset: str, key: str):
 
 @app.get("/salaries", response_model=List[SalaryRecordModel])
 async def list_salaries(
-    limit: int = Query(100, ge=1, le=1000),
+    limit: int = Query(100, ge=1, le=2000),
     job_title: Optional[str] = None,
 ):
     query  = {"job_title": job_title} if job_title else {}
@@ -48,10 +48,9 @@ async def list_salaries(
 
 @app.get("/salaries/{job_title}", response_model=List[SalaryRecordModel])
 async def list_salaries_by_title(
-    job_title: str,
-    limit: int = Query(100, ge=1, le=2000),
+    job_title: str
 ):
-    cursor = salary_coll.find({"job_title": job_title}, limit=limit)
+    cursor = salary_coll.find({"job_title": job_title})
     docs   = [SalaryRecordModel(**doc) async for doc in cursor]
     if not docs:
         raise HTTPException(404, f"No salary records for job_title={job_title}")
