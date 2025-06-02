@@ -31,10 +31,14 @@ The API will be live at [**http://127.0.0.1:8000**](http://127.0.0.1:8000).
 | ------ | -------------------- | -------------------------------------- |
 | GET    | `/records`           | Return *all* records.                  |
 | GET    | `/records/{dataset}` | Return records for a specific dataset. |
-
-> Replace `{dataset}` with one of the names listed below.
+| GET    | `/salaries`           | Return *all* salaries information.    |
+| GET    | `/salaries/{job_title}`| Return salaries for this job_title.    |
+| GET    | `/salaries/{job_title}/experience_levels`| Return the type of experience_levels and its number for this job_title.    |
+| GET    | `/salaries/{job_title}/{experience_level}`| Return salaries for this job_title and this experience_level.    |
 
 ---
+
+> Replace `{dataset}` with one of the names listed below.
 
 ## Available Datasets
 
@@ -48,4 +52,38 @@ Currently shipped datasets:
 
 4. *static_variable_importances* - key is Variable, value is Importance (%)
 
+---
+> Replace `{job_title}` with one of the names listed below.
 
+## Available job_title
+1. Data Analyst
+
+2. Data Analytics Manager
+
+3. Data Architect
+
+4. Data Engineer
+
+5. Data Scientist
+
+6. Head of Data
+
+7. Machine Learning Engineer
+
+8. Machine Learning Scientist
+
+9. Research Scientist
+
+---
+
+> Replace `{experience_level}` with one of the names listed below.
+#### Tips: not every job_title has all of the experience_level below. Check with api GET "/salaries/{job_title}/experience_levels" first before you call it.
+
+## Available experience_level
+1. Entry
+
+2. Mid
+
+3. Senior
+
+4. Executive
