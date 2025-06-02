@@ -49,7 +49,7 @@ async def list_salaries(
 @app.get("/salaries/{job_title}", response_model=List[SalaryRecordModel])
 async def list_salaries_by_title(
     job_title: str,
-    limit: int = Query(100, ge=1, le=1000),
+    limit: int = Query(100, ge=1, le=2000),
 ):
     cursor = salary_coll.find({"job_title": job_title}, limit=limit)
     docs   = [SalaryRecordModel(**doc) async for doc in cursor]
