@@ -1,7 +1,6 @@
 # server/data_schema.py
 from pydantic import BaseModel, Field
-from typing import Literal
-from typing import Union
+from typing import Literal, Union, Dict
 
 class BasicInfoModel(BaseModel):
     dataset: Literal[
@@ -25,3 +24,8 @@ class SalaryRecordModel(BaseModel):
     employee_residence: str
     company_size:       str
     year:               int
+
+
+class LocationOverview(BaseModel):
+    total_locations: int
+    locations: Dict[str, int]
