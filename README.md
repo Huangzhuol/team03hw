@@ -35,6 +35,9 @@ The API will be live at [**http://127.0.0.1:8000**](http://127.0.0.1:8000).
 | GET    | `/salaries/{job_title}`| Return salaries for this job_title.    |
 | GET    | `/salaries/{job_title}/experience_levels`| Return the type of experience_levels and its number for this job_title.    |
 | GET    | `/salaries/{job_title}/{experience_level}`| Return salaries for this job_title and this experience_level.    |
+| GET    | `/salary_location`           | Return the type of company_location and its number.   |
+| GET    | `/salary_location/{company_location}`           | Return the salaries by company_location.   |
+| GET    | `/salary_location/{company_location}/{job_title}`           | Return the salaries by company_location and job_title.   |
 
 ---
 
