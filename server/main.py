@@ -3,6 +3,8 @@ from fastapi import FastAPI, HTTPException, Query
 from data_schema import BasicInfoModel
 from motor.motor_asyncio import AsyncIOMotorClient
 from typing import List, Optional, Dict
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from data_schema import BasicInfoModel, SalaryRecordModel, LocationOverview
 
@@ -11,6 +13,13 @@ DB_NAME   = "team03hw"
 COLL_NAME = "tft_basic_info"
 
 app = FastAPI(title="TFT Basic Info API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 client = AsyncIOMotorClient(MONGO_URI)
 coll   = client[DB_NAME][COLL_NAME]
@@ -132,3 +141,48 @@ async def salaries_by_location_title(company_location: str, job_title: str):
             f"No salary records for company_location='{company_location}' & job_title='{job_title}'",
         )
     return docs
+
+@app.get("/avg_salaries", response_model=Dict[str, float])
+async def average_salary_by_title():
+    pipeline = [
+        {"$group": {
+            "_id": "$job_title",
+            "avg_salary": {"$avg": "$salary_in_usd"}
+        }},
+        {"$sort": {"avg_salary": -1}}
+    ]
+    cursor = salary_coll.aggregate(pipeline)
+
+    result: Dict[str, float] = {}
+    async for doc in cursor:
+        job_title = doc["_id"]
+        avg_salary = round(doc["avg_salary"], 2)
+        result[job_title] = avg_salary
+
+    if not result:
+        raise HTTPException(404, "No salary data found.")
+    
+    return JSONResponse(content=result)
+
+@app.get("/avg_salaries/{job_title}", response_model=Dict[str, float])
+async def avg_salary_by_experience_level(job_title: str):
+    pipeline = [
+        {"$match": {"job_title": job_title}},
+        {"$group": {
+            "_id": "$experience_level",
+            "avg_salary": {"$avg": "$salary_in_usd"}
+        }},
+        {"$sort": {"avg_salary": -1}}
+    ]
+    cursor = salary_coll.aggregate(pipeline)
+
+    result: Dict[str, float] = {}
+    async for doc in cursor:
+        level = doc["_id"]
+        avg_salary = round(doc["avg_salary"], 2)
+        result[level] = avg_salary
+
+    if not result:
+        raise HTTPException(404, f"No salary data for job_title='{job_title}'")
+
+    return result
