@@ -2,7 +2,7 @@
 from fastapi import FastAPI, HTTPException, Query
 from data_schema import BasicInfoModel
 from motor.motor_asyncio import AsyncIOMotorClient
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from data_schema import BasicInfoModel, SalaryRecordModel
 
@@ -55,4 +55,34 @@ async def list_salaries_by_title(
     docs   = [SalaryRecordModel(**doc) async for doc in cursor]
     if not docs:
         raise HTTPException(404, f"No salary records for job_title={job_title}")
+    return docs
+
+@app.get("/salaries/{job_title}/experience_levels", response_model=Dict[str, int])
+async def experience_level_stats(job_title: str):
+    pipeline = [
+        {"$match": {"job_title": job_title}},
+        {"$group": {"_id": "$experience_level", "count": {"$sum": 1}}},
+    ]
+    cursor = salary_coll.aggregate(pipeline)
+
+    stats: Dict[str, int] = {}
+    async for doc in cursor:
+        stats[doc["_id"]] = doc["count"]
+
+    if not stats:
+        raise HTTPException(404, f"No salary records for job_title={job_title}")
+
+    return stats
+
+
+@app.get("/salaries/{job_title}/{experience_level}", response_model=List[SalaryRecordModel])
+async def salaries_by_title_level(job_title: str, experience_level: str):
+    query = {"job_title": job_title, "experience_level": experience_level}
+    cursor = salary_coll.find(query)
+    docs = [SalaryRecordModel(**doc) async for doc in cursor]
+    if not docs:
+        raise HTTPException(
+            404,
+            f"No salary records for job_title='{job_title}' & experience_level='{experience_level}'",
+        )
     return docs
