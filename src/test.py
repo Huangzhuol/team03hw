@@ -130,7 +130,7 @@ def test():
         reduce_on_plateau_patience=2,
     )
     tft.save_hyperparameters(ignore=["loss", "logging_metrics"])
-    trainer = Trainer(max_epochs=1, gradient_clip_val=0.1, enable_model_summary=False, log_every_n_steps=1)
+    trainer = Trainer(max_epochs=3, gradient_clip_val=0.1, enable_model_summary=False, log_every_n_steps=1)
     trainer.fit(tft, train_dataloaders=train_dataloader)
 
     # Predict 2025
@@ -164,15 +164,20 @@ def test():
     # # Evaluation metrics
     true_vals =  df_pred["Salary in USD"].values
     pred_vals = df_pred["Predicted Salary USD"].values
+    # # Print results only
     mae = mean_absolute_error(true_vals, pred_vals)
     mse = mean_squared_error(true_vals, pred_vals)
     rmse = math.sqrt(mse)
 
-    # # Print results only
+    # SMAPE calculation (as %)
+    smape = 100 * np.mean(
+        2 * np.abs(pred_vals - true_vals) / (np.abs(true_vals) + np.abs(pred_vals) + 1e-8)
+    )
+
     print(f"Evaluated on {len(df_pred)} rows")
     print(f"MAE: {mae:.2f}")
-    print(f"MSE: {mse:.2f}")
     print(f"RMSE: {rmse:.2f}")
-
+    print(f"SMAPE: {smape:.2f}%")
+    
 if __name__ == "__main__":
     test()
