@@ -41,7 +41,7 @@ The API will be live at [**http://127.0.0.1:8000**](http://127.0.0.1:8000).
 | GET    | `/avg_salaries`           | Return job_title and its avg_salaries    |
 | GET    | `/avg_salarie/{job_title}`           | Return experience level and its avg_salaries for a specific job_title   |
 | GET    | `/tft_predictions`           | Return *all* tft predictions records.                  |
-
+| GET    | `/avg_sal_by_year/{job_title}`           | Return average salaries for each year and each experience_level in job_title.                  |
 ---
 
 > Replace `{dataset}` with one of the names listed below.
