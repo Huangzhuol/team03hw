@@ -205,3 +205,44 @@ async def get_all_tft_predictions():
             detail="No prediction records found in 'tft_predictions'.",
         )
     return docs
+
+
+@app.get(
+    "/avg_sal_by_year/{job_title}",
+    response_model=Dict[int, Dict[str, float]],
+)
+async def avg_salary_by_year(job_title: str):
+    pipeline = [
+        {"$match": {"job_title": job_title}},
+        {"$group": {
+            "_id": {
+                "year": "$year",
+                "level": "$experience_level"
+            },
+            "avg_salary": {"$avg": "$salary_in_usd"}
+        }},
+        {"$sort": {
+            "_id.year": 1,
+            "_id.level": 1
+        }}
+    ]
+    cursor = salary_coll.aggregate(pipeline)
+
+
+    temp: Dict[int, Dict[str, float]] = {}
+    async for doc in cursor:
+        year = doc["_id"]["year"]                 
+        level = doc["_id"]["level"]                
+        avg_usd = round(doc["avg_salary"], 2)     
+
+        if year not in temp:
+            temp[year] = {}
+        temp[year][level] = avg_usd
+
+    if not temp:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No salary data found for job_title='{job_title}'"
+        )
+    return temp
+
