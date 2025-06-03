@@ -93,3 +93,17 @@ Currently shipped datasets:
 3. Senior
 
 4. Executive
+
+## Frontend
+### Quick Start
+```bash
+cd client
+
+# Install required Node.js packages
+npm install
+
+# Start the React development server
+npm run dev
+```
+Visit the frontend in your browser :  [**http://localhost:5173**](http://localhost:5173).
+
