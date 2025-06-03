@@ -132,7 +132,20 @@ def test():
     tft.save_hyperparameters(ignore=["loss", "logging_metrics"])
     trainer = Trainer(max_epochs=3, gradient_clip_val=0.1, enable_model_summary=False, log_every_n_steps=1)
     trainer.fit(tft, train_dataloaders=train_dataloader)
+    
+    # raw_predictions= tft.predict(full_dataloader, mode="raw", return_x=True)
+    # raw_output = dict(raw_predictions.output._asdict())
+    # max_len = tft.hparams.max_encoder_length
+    # # clamped the encoder_lengths
+    # if raw_output["encoder_lengths"].max() >= max_len:
+    #     print(f"[Fix] Clipping encoder_lengths > {max_len - 1}")
+    #     raw_output["encoder_lengths"] = torch.clamp(
+    #         raw_output["encoder_lengths"], max=max_len - 1
+    #     )
+    # interpretation = tft.interpret_output(raw_output, reduction="sum")
 
+    # tft.plot_interpretation(interpretation)
+    # plt.show()
     # Predict 2025
     result = tft.predict(full_dataloader, mode="prediction", return_x=True)
     predictions = result[0]
