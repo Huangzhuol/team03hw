@@ -6,7 +6,7 @@ from pathlib import Path
 from data_schema import BasicInfoModel, SalaryRecordModel
 
 CSV_SALARIES = Path(__file__).parent.parent / "data" / "Latest_Data_Science_Salaries.csv"
-
+CSV_PREDICTIONS = Path(__file__).parent.parent / "result" / "TFT_Predictions.csv"
 SELECTED_TITLES = {
     "Data Analyst",
     "Data Analytics Manager",
@@ -32,6 +32,7 @@ COLL_NAME = "tft_basic_info"
 client       = MongoClient(MONGO_URI)   
 salary_coll = client[DB_NAME]["salaries_filtered"]
 coll   = client[DB_NAME][COLL_NAME]
+predictions_coll = client[DB_NAME]["tft_predictions"]
 
 
 def read_and_normalize(name: str, filename: str) -> pd.DataFrame:
@@ -75,6 +76,27 @@ def main():
         salary_coll.insert_many(records)
 
     print(f"Inserted {salary_coll.count_documents({})} salary records into salaries_filtered.")
+
+    if CSV_PREDICTIONS.exists():
+        df_pred = pd.read_csv(CSV_PREDICTIONS)
+
+
+        mapping = {"EN": "Entry", "MI": "Mid", "SE": "Senior", "EX": "Executive"}
+        df_pred["Experience Level"] = df_pred["Experience Level"].map(mapping)
+
+        df_pred = df_pred.rename(columns=lambda c: c.lower().replace(" ", "_"))
+
+        pred_records = []
+        for rec in df_pred.to_dict("records"):
+            pred_records.append(rec)
+
+        predictions_coll.delete_many({})
+        if pred_records:
+            predictions_coll.insert_many(pred_records)
+        print(f"Inserted {predictions_coll.count_documents({})} prediction records into tft_predictions.")
+    else:
+        print(f"Warning: {CSV_PREDICTIONS} not found, skip importing predictions.")
+
 
 if __name__ == "__main__":
     main()

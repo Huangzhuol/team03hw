@@ -40,6 +40,7 @@ The API will be live at [**http://127.0.0.1:8000**](http://127.0.0.1:8000).
 | GET    | `/salary_location/{company_location}/{job_title}`           | Return the salaries by company_location and job_title.   |
 | GET    | `/avg_salaries`           | Return job_title and its avg_salaries    |
 | GET    | `/avg_salarie/{job_title}`           | Return experience level and its avg_salaries for a specific job_title   |
+| GET    | `/tft_predictions`           | Return *all* tft predictions records.                  |
 
 ---
 

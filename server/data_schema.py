@@ -29,3 +29,10 @@ class SalaryRecordModel(BaseModel):
 class LocationOverview(BaseModel):
     total_locations: int
     locations: Dict[str, int]
+
+
+class PredictionModel(BaseModel):
+    job_title: str
+    experience_level: str
+    year: int
+    predicted_salary_usd: float

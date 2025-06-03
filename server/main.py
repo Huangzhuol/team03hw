@@ -6,7 +6,7 @@ from typing import List, Optional, Dict
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from data_schema import BasicInfoModel, SalaryRecordModel, LocationOverview
+from data_schema import BasicInfoModel, SalaryRecordModel, LocationOverview, PredictionModel
 
 MONGO_URI = "mongodb://localhost:27017"
 DB_NAME   = "team03hw"
@@ -24,6 +24,7 @@ app.add_middleware(
 client = AsyncIOMotorClient(MONGO_URI)
 coll   = client[DB_NAME][COLL_NAME]
 salary_coll = client[DB_NAME]["salaries_filtered"]
+predictions_coll = client[DB_NAME]["tft_predictions"]
 
 @app.get("/records", response_model=List[BasicInfoModel])
 async def list_all(limit: int = 100):
@@ -186,3 +187,21 @@ async def avg_salary_by_experience_level(job_title: str):
         raise HTTPException(404, f"No salary data for job_title='{job_title}'")
 
     return result
+
+@app.get(
+    "/tft_predictions",
+    response_model=List[PredictionModel],
+)
+async def get_all_tft_predictions():
+    cursor = predictions_coll.find({})
+    
+    docs: List[PredictionModel] = []
+    async for doc in cursor:
+        docs.append(PredictionModel(**doc))
+
+    if not docs:
+        raise HTTPException(
+            status_code=404,
+            detail="No prediction records found in 'tft_predictions'.",
+        )
+    return docs
