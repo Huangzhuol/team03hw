@@ -1,6 +1,9 @@
 # team03hw:Job Salaries Analyze
 
-
+First,make sure you have the respective packages installed by this command.
+```bash
+pip install -r requirements.txt
+```
 
 
 ## Model(src foler)
