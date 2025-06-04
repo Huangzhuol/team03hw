@@ -1,15 +1,22 @@
-# team03hw
-
-now it just realize with the factor "company size"= Medium, and it want to realize that it has  a front end, so user can select all known columns or some columns to predict future salary,
+# team03hw:Job Salaries Analyze
 
 
 
-The model has inbuilt interpretation capabilities due to how its architecture is build. Let’s see how that looks. We first calculate interpretations with interpret_output() and plot them subsequently with plot_interpretation().
 
+## Model(src foler)
+| file name |  Description                            |
+| ------ | - -------------------------------------- |
+|autoLM_data_preprocess.py  | Return filtered_salaries.csv for AutoLM evaluation.             |
+|autoLM_test.py | Return MAE,RMSE,and SMAPE of prediction 2025 data as AutoLM evaluation. |
+|main.py    | Return the prediction data for 2025-2026 to the front end for display.   |
+|test.py   |Return MAE,RMSE,and SMAPE of prediction 2025 data as TFT evaluation.   |
+
+### Quick Start
+```bash
+python autoLM_data_preprocess.py/autoLM_test.py/main.py/test.py  
+```
 
 reference LINK:https://pytorch-forecasting.readthedocs.io/en/latest/tutorials/stallion.html#Interpret-model
-
-
 ## Backend
 ### Quick Start
 
