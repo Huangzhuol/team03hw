@@ -207,22 +207,27 @@ const LineChart = ({ selectedJobTitle }) => {
             .style("font-size", "12px")
             .text("Salary (USD)");
 
-          const legend = svg
-            .append("g")
-            .attr("transform", `translate(${width - margin.right + 20}, ${margin.top})`);
+            svg
+            .append("foreignObject")
+            .attr("x", width - margin.right + 20)
+            .attr("y", margin.top)
+            .attr("width", 200)
+            .attr("height", 300) 
+            .append("xhtml:div")
+            .style("height", "300px")
+            .style("overflow-y", "auto")
+            .style("font-size", "10px")
+            .selectAll("div")
+            .data([...groups.keys()])
+            .join("div")
+            .style("display", "flex")
+            .style("align-items", "center")
+            .style("margin-bottom", "4px")
+            .html(
+            (key) =>
+                `<div style="width:10px;height:10px;background:${color(key)};margin-right:5px;"></div><div>${key}</div>`
+            );
 
-          [...groups.keys()].forEach((key, i) => {
-            const legendRow = legend
-              .append("g")
-              .attr("transform", `translate(0, ${i * 20})`);
-            legendRow.append("rect").attr("width", 10).attr("height", 10).attr("fill", color(key));
-            legendRow
-              .append("text")
-              .attr("x", 15)
-              .attr("y", 10)
-              .text(key)
-              .style("font-size", "10px");
-          });
 
           svg
             .append("text")
