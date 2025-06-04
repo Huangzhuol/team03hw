@@ -10,11 +10,9 @@ const BarChart = ({ onJobTitleSelect }) => {
   
   useEffect(() => {
     if (currentView === "overview") {
-      console.log("Fetching overall avg_salaries...");
       fetch("http://127.0.0.1:8000/avg_salaries")
         .then((res) => res.json())
         .then((jsonData) => {
-          console.log("Fetched overview data:", jsonData);
           
           const overviewData = Object.entries(jsonData).map(([job_title, avg_salary]) => ({
             label: job_title,
@@ -25,11 +23,10 @@ const BarChart = ({ onJobTitleSelect }) => {
         .catch((error) => console.error("Fetch error (overview):", error));
     } else if (selectedJobTitle) {
       
-      console.log(`Fetching experience-level avg_salaries for: ${selectedJobTitle}`);
       fetch(`http://127.0.0.1:8000/avg_salaries/${selectedJobTitle}`)
         .then((res) => res.json())
         .then((jsonData) => {
-          console.log(`Fetched drill-down data for ${selectedJobTitle}:`, jsonData);
+          
           
           const drilldownData = Object.entries(jsonData).map(([level, avg_salary]) => ({
             label: `${selectedJobTitle} (${level})`,
@@ -44,10 +41,10 @@ const BarChart = ({ onJobTitleSelect }) => {
   
   useEffect(() => {
     if (!data.length) {
-      console.log("No data to render!");
+     
       return;
     }
-    console.log("Rendering chart with data:", data);
+    
 
     const margin = { top: 20, right: 30, bottom: 100, left: 60 };
     const width = 1700 - margin.left - margin.right;
@@ -102,7 +99,6 @@ const BarChart = ({ onJobTitleSelect }) => {
       .attr("height", (d) => height - y(d.median_salary))
       .attr("fill", "steelblue")
       .on("click", (event, d) => {
-        console.log("Bar clicked:", d);
         if (currentView === "overview") {
           onJobTitleSelect(d.label); 
           setSelectedJobTitle(d.label);
