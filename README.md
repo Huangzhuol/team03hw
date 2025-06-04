@@ -4,12 +4,13 @@
 
 
 ## Model(src foler)
-| file name |  Description                            |
-| ------ | - -------------------------------------- |
-|autoLM_data_preprocess.py  | Return filtered_salaries.csv for AutoLM evaluation.             |
-|autoLM_test.py | Return MAE,RMSE,and SMAPE of prediction 2025 data as AutoLM evaluation. |
-|main.py    | Return the prediction data for 2025-2026 to the front end for display.   |
-|test.py   |Return MAE,RMSE,and SMAPE of prediction 2025 data as TFT evaluation.   |
+| File Name                | Description                                                               |
+|--------------------------|---------------------------------------------------------------------------|
+| autoLM_data_preprocess.py | Return filtered_salaries.csv for AutoLM evaluation.                      |
+| autoLM_test.py           | Return MAE, RMSE, and SMAPE of prediction 2025 data as AutoLM evaluation. |
+| main.py                  | Return the prediction data for 2025–2026 to the front end for display.    |
+| test.py                  | Return MAE, RMSE, and SMAPE of prediction 2025 data as TFT evaluation.    |
+
 ---
 ### Quick Start
 ```bash
