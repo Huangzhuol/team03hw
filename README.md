@@ -14,7 +14,10 @@
 ---
 ### Quick Start
 ```bash
-python autoLM_data_preprocess.py/autoLM_test.py/main.py/test.py  
+python autoLM_data_preprocess.py
+python autoLM_test.py
+python main.py
+python test.py  
 ```
 
 reference LINK:https://pytorch-forecasting.readthedocs.io/en/latest/tutorials/stallion.html#Interpret-model
