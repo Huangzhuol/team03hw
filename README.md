@@ -10,7 +10,7 @@
 |autoLM_test.py | Return MAE,RMSE,and SMAPE of prediction 2025 data as AutoLM evaluation. |
 |main.py    | Return the prediction data for 2025-2026 to the front end for display.   |
 |test.py   |Return MAE,RMSE,and SMAPE of prediction 2025 data as TFT evaluation.   |
-
+---
 ### Quick Start
 ```bash
 python autoLM_data_preprocess.py/autoLM_test.py/main.py/test.py  
