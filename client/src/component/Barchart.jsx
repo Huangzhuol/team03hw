@@ -7,15 +7,13 @@ const BarChart = ({ onJobTitleSelect }) => {
   const [currentView, setCurrentView] = useState("overview");
   const [selectedJobTitle, setSelectedJobTitle] = useState("");
 
-  
+
   useEffect(() => {
     if (currentView === "overview") {
-      console.log("Fetching overall avg_salaries...");
-      fetch("http://127.0.0.1:8000/avg_salaries")
+      fetch("http://127.0.0.1:8000/avg_salaries") // fetch data
         .then((res) => res.json())
         .then((jsonData) => {
-          console.log("Fetched overview data:", jsonData);
-          
+
           const overviewData = Object.entries(jsonData).map(([job_title, avg_salary]) => ({
             label: job_title,
             median_salary: avg_salary,
@@ -24,13 +22,12 @@ const BarChart = ({ onJobTitleSelect }) => {
         })
         .catch((error) => console.error("Fetch error (overview):", error));
     } else if (selectedJobTitle) {
-      
-      console.log(`Fetching experience-level avg_salaries for: ${selectedJobTitle}`);
+
       fetch(`http://127.0.0.1:8000/avg_salaries/${selectedJobTitle}`)
         .then((res) => res.json())
         .then((jsonData) => {
-          console.log(`Fetched drill-down data for ${selectedJobTitle}:`, jsonData);
-          
+
+
           const drilldownData = Object.entries(jsonData).map(([level, avg_salary]) => ({
             label: `${selectedJobTitle} (${level})`,
             median_salary: avg_salary,
@@ -41,13 +38,13 @@ const BarChart = ({ onJobTitleSelect }) => {
     }
   }, [currentView, selectedJobTitle]);
 
-  
+
   useEffect(() => {
     if (!data.length) {
-      console.log("No data to render!");
+
       return;
     }
-    console.log("Rendering chart with data:", data);
+
 
     const margin = { top: 20, right: 30, bottom: 100, left: 60 };
     const width = 1700 - margin.left - margin.right;
@@ -83,12 +80,12 @@ const BarChart = ({ onJobTitleSelect }) => {
 
 
     svg
-    .append("text")
-    .attr("x", 18)                      
-    .attr("y", -10)                       
-    .style("font-size", "12px")
-    .style("text-anchor", "end")
-    .text("Salary (USD)");
+      .append("text")
+      .attr("x", 18)
+      .attr("y", -10)
+      .style("font-size", "12px")
+      .style("text-anchor", "end")
+      .text("Salary (USD)");
 
 
     svg
@@ -102,13 +99,12 @@ const BarChart = ({ onJobTitleSelect }) => {
       .attr("height", (d) => height - y(d.median_salary))
       .attr("fill", "steelblue")
       .on("click", (event, d) => {
-        console.log("Bar clicked:", d);
         if (currentView === "overview") {
-          onJobTitleSelect(d.label); 
+          onJobTitleSelect(d.label);
           setSelectedJobTitle(d.label);
           setCurrentView("drilldown");
         } else {
-          onJobTitleSelect(""); 
+          onJobTitleSelect("");
           setSelectedJobTitle("");
           setCurrentView("overview");
         }

@@ -10,7 +10,7 @@ const ChoroplethMap = ({ selectedJobTitle }) => {
     const width = 800;
     const height = 400;
 
-    
+
     const svg = d3
       .select(svgRef.current)
       .attr("width", width)
@@ -18,7 +18,7 @@ const ChoroplethMap = ({ selectedJobTitle }) => {
 
     svg.selectAll("*").remove();
 
-    
+    // upload world.json, to get the world map
     d3.json("/world-110m.v1.json").then((geoData) => {
       const countries = topojson.feature(geoData, geoData.objects.countries);
 
@@ -29,7 +29,7 @@ const ChoroplethMap = ({ selectedJobTitle }) => {
 
       const path = d3.geoPath().projection(projection);
 
-      
+
       const countryPaths = svg
         .append("g")
         .selectAll("path")
@@ -39,9 +39,9 @@ const ChoroplethMap = ({ selectedJobTitle }) => {
         .attr("fill", "#eee")
         .attr("stroke", "#333")
         .attr("stroke-width", 0.5)
-        .style("cursor", "pointer"); 
+        .style("cursor", "pointer");
 
-     
+      // load the elected job data
       if (selectedJobTitle) {
         fetch(
           `http://127.0.0.1:8000/salaries/${encodeURIComponent(selectedJobTitle)}`
@@ -53,7 +53,7 @@ const ChoroplethMap = ({ selectedJobTitle }) => {
                 row.job_title === selectedJobTitle &&
                 isoAlpha2ToNumeric.hasOwnProperty(row.employee_residence)
             );
-
+            // median_salary
             const grouped = d3.rollups(
               filtered,
               (v) => ({
@@ -75,7 +75,7 @@ const ChoroplethMap = ({ selectedJobTitle }) => {
               ])
               .interpolator(d3.interpolateBlues);
 
-            
+
             svg
               .selectAll("path")
               .attr("fill", (d) => {
@@ -98,7 +98,7 @@ const ChoroplethMap = ({ selectedJobTitle }) => {
                 return countryName;
               });
 
-            
+            //circle size represents selected job's count
             svg
               .append("g")
               .selectAll("circle")
@@ -132,7 +132,7 @@ const ChoroplethMap = ({ selectedJobTitle }) => {
                 )}\nJob Count: ${v.count}`;
               });
 
-            
+
             const legendHeight = 120;
             const legendWidth = 12;
             const legendSvg = svg
@@ -163,7 +163,7 @@ const ChoroplethMap = ({ selectedJobTitle }) => {
                   "stop-color",
                   colorScale(
                     colorScale.domain()[0] +
-                      t * (colorScale.domain()[1] - colorScale.domain()[0])
+                    t * (colorScale.domain()[1] - colorScale.domain()[0])
                   )
                 );
             });
