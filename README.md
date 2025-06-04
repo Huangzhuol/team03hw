@@ -28,6 +28,9 @@ reference LINK:https://pytorch-forecasting.readthedocs.io/en/latest/tutorials/st
 # before that you need to intall the requirements.txt
 cd server
 
+# import the data first by running this command.
+python import_data.py
+
 # Run dev server
 uvicorn main:app --reload --port 8000
 ```
