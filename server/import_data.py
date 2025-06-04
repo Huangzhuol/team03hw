@@ -5,7 +5,7 @@ from pathlib import Path
 
 from data_schema import BasicInfoModel, SalaryRecordModel
 
-CSV_SALARIES = Path(__file__).parent.parent / "data" / "Latest_Data_Science_Salaries.csv"
+CSV_SALARIES = Path(__file__).parent.parent / "data" / "salaries.csv"
 CSV_PREDICTIONS = Path(__file__).parent.parent / "result" / "TFT_Predictions.csv"
 SELECTED_TITLES = {
     "Data Analyst",
