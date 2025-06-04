@@ -13,7 +13,7 @@ const Heatmap = ({ selectedJobTitle }) => {
 
     const svg = d3.select(svgRef.current).attr("width", width).attr("height", height);
     svg.selectAll("*").remove();
-
+    // show empty if no select
     if (!selectedJobTitle) {
       const rows = 5;
       const cols = 10;

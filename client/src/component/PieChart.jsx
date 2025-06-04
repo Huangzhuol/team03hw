@@ -12,13 +12,13 @@ const PieChart = ({ data, title, explanation }) => {
     const radius = Math.min(width, height) / 2 * 0.8;
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-    
+
     const totalValue = d3.sum(data, (d) => d.value);
 
-    
+
     d3.select(svgRef.current).selectAll("*").remove();
 
-   
+
     const svg = d3
       .select(svgRef.current)
       .attr("width", width)
@@ -36,7 +36,7 @@ const PieChart = ({ data, title, explanation }) => {
       .innerRadius(0)
       .outerRadius(radius);
 
-    
+
     const tooltip = d3
       .select(svgRef.current.parentNode)
       .append("div")
@@ -50,15 +50,15 @@ const PieChart = ({ data, title, explanation }) => {
       .style("pointer-events", "none")
       .style("box-shadow", "0px 0px 2px rgba(0,0,0,0.3)");
 
-   
+
     svg
       .selectAll("path")
       .data(pie(data))
       .join("path")
-      .style("cursor", "pointer")
+      .style("cursor", "pointer") 
       .attr("d", arc)
       .attr("fill", (d, i) => color(i))
-      .on("mouseover", function (event, d) {
+      .on("mouseover", function (event, d) { //hovor
         tooltip
           .style("visibility", "visible")
           .html(
@@ -77,7 +77,7 @@ const PieChart = ({ data, title, explanation }) => {
         tooltip.style("visibility", "hidden");
       });
 
-    
+
     const legend = d3
       .select(svgRef.current.parentNode)
       .append("div")
@@ -107,7 +107,7 @@ const PieChart = ({ data, title, explanation }) => {
           `${d.key} (${((d.value / totalValue) * 100).toFixed(2)}%)`
       );
 
-    
+
     return () => {
       tooltip.remove();
       legend.remove();
