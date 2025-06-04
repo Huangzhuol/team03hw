@@ -1,7 +1,14 @@
 import pandas as pd
 
+# read the csv
 test_df = pd.read_csv("./result/TFTtest_Predictions.csv")
 salaries_df = pd.read_csv("./data/salaries.csv")
+
+# the name is different. we
+test_df = test_df.rename(columns={
+    "Job Title": "job_title",
+    "Experience Level": "experience_level"
+})
 
 job_level_combos = test_df[["job_title", "experience_level"]].drop_duplicates()
 
