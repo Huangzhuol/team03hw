@@ -101,6 +101,7 @@ def main():
     max_encoder_length = 5
     max_prediction_length = 2
 
+    # Build datasets
     training_data = TimeSeriesDataSet(
         model_input_df,
         time_idx=time_col,
