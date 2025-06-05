@@ -213,18 +213,27 @@ async def get_all_tft_predictions():
 )
 async def avg_salary_by_year(job_title: str):
     pipeline = [
-        {"$match": {"job_title": job_title}},
-        {"$group": {
-            "_id": {
-                "year": "$year",
-                "level": "$experience_level"
-            },
-            "avg_salary": {"$avg": "$salary_in_usd"}
-        }},
-        {"$sort": {
-            "_id.year": 1,
-            "_id.level": 1
-        }}
+        {
+            "$match": {
+                "job_title": job_title,
+                "year": {"$ne": 2025} 
+            }
+        },
+        {
+            "$group": {
+                "_id": {
+                    "year": "$year",
+                    "level": "$experience_level"
+                },
+                "avg_salary": {"$avg": "$salary_in_usd"}
+            }
+        },
+        {
+            "$sort": {
+                "_id.year": 1,
+                "_id.level": 1
+            }
+        }
     ]
     cursor = salary_coll.aggregate(pipeline)
 
