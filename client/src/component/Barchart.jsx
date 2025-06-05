@@ -7,44 +7,38 @@ const BarChart = ({ onJobTitleSelect }) => {
   const [currentView, setCurrentView] = useState("overview");
   const [selectedJobTitle, setSelectedJobTitle] = useState("");
 
-
   useEffect(() => {
     if (currentView === "overview") {
-      fetch("http://127.0.0.1:8000/avg_salaries") // fetch data
+      fetch("http://127.0.0.1:8000/avg_salaries")
         .then((res) => res.json())
         .then((jsonData) => {
-
-          const overviewData = Object.entries(jsonData).map(([job_title, avg_salary]) => ({
-            label: job_title,
-            median_salary: avg_salary,
-          }));
+          const overviewData = Object.entries(jsonData).map(
+            ([job_title, avg_salary]) => ({
+              label: job_title,
+              median_salary: avg_salary,
+            })
+          );
           setData(overviewData);
         })
         .catch((error) => console.error("Fetch error (overview):", error));
     } else if (selectedJobTitle) {
-
       fetch(`http://127.0.0.1:8000/avg_salaries/${selectedJobTitle}`)
         .then((res) => res.json())
         .then((jsonData) => {
-
-
-          const drilldownData = Object.entries(jsonData).map(([level, avg_salary]) => ({
-            label: `${selectedJobTitle} (${level})`,
-            median_salary: avg_salary,
-          }));
+          const drilldownData = Object.entries(jsonData).map(
+            ([level, avg_salary]) => ({
+              label: `${selectedJobTitle} (${level})`,
+              median_salary: avg_salary,
+            })
+          );
           setData(drilldownData);
         })
         .catch((error) => console.error("Fetch error (drilldown):", error));
     }
   }, [currentView, selectedJobTitle]);
 
-
   useEffect(() => {
-    if (!data.length) {
-
-      return;
-    }
-
+    if (!data.length) return;
 
     const margin = { top: 20, right: 30, bottom: 100, left: 60 };
     const width = 1700 - margin.left - margin.right;
@@ -78,7 +72,6 @@ const BarChart = ({ onJobTitleSelect }) => {
     const y = d3.scaleLinear().domain([0, yMax]).nice().range([height, 0]);
     svg.append("g").call(d3.axisLeft(y));
 
-
     svg
       .append("text")
       .attr("x", 18)
@@ -86,7 +79,6 @@ const BarChart = ({ onJobTitleSelect }) => {
       .style("font-size", "12px")
       .style("text-anchor", "end")
       .text("Salary (USD)");
-
 
     svg
       .selectAll("rect")
@@ -103,10 +95,6 @@ const BarChart = ({ onJobTitleSelect }) => {
           onJobTitleSelect(d.label);
           setSelectedJobTitle(d.label);
           setCurrentView("drilldown");
-        } else {
-          onJobTitleSelect("");
-          setSelectedJobTitle("");
-          setCurrentView("overview");
         }
       })
       .append("title")
@@ -120,6 +108,27 @@ const BarChart = ({ onJobTitleSelect }) => {
           ? "All job titles"
           : `Experience Levels for ${selectedJobTitle}`}
       </h3>
+
+      {currentView === "drilldown" && (
+        <button
+          onClick={() => {
+            setSelectedJobTitle("");
+            setCurrentView("overview");
+            onJobTitleSelect("");
+          }}
+          style={{
+            marginBottom: "10px",
+            padding: "6px 12px",
+            backgroundColor: "#eee",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          ← Back to all job titles
+        </button>
+      )}
+
       <svg ref={svgRef} style={{ width: "100%", height: "400px" }}></svg>
     </div>
   );
