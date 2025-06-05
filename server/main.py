@@ -26,11 +26,13 @@ coll   = client[DB_NAME][COLL_NAME]
 salary_coll = client[DB_NAME]["salaries_filtered"]
 predictions_coll = client[DB_NAME]["tft_predictions"]
 
+# List all basic info records, with optional limit
 @app.get("/records", response_model=List[BasicInfoModel])
 async def list_all(limit: int = 100):
     cursor = coll.find({}, limit=limit)
     return [BasicInfoModel(**doc) async for doc in cursor]
 
+# List records by dataset name
 @app.get("/records/{dataset}", response_model=List[BasicInfoModel])
 async def list_by_dataset(dataset: str, limit: int = 100):
     cursor = coll.find({"dataset": dataset}, limit=limit)
@@ -39,6 +41,7 @@ async def list_by_dataset(dataset: str, limit: int = 100):
         raise HTTPException(404, f"No records in dataset={dataset}")
     return docs
 
+# Get a single record by dataset and key
 @app.get("/records/{dataset}/{key}", response_model=BasicInfoModel)
 async def get_single(dataset: str, key: str):
     doc = await coll.find_one({"dataset": dataset, "key": key})
@@ -46,6 +49,7 @@ async def get_single(dataset: str, key: str):
         raise HTTPException(404, "Record not found")
     return BasicInfoModel(**doc)
 
+# List salary records, optionally filtered by job title
 @app.get("/salaries", response_model=List[SalaryRecordModel])
 async def list_salaries(
     limit: int = Query(100, ge=1, le=2000),
@@ -55,7 +59,7 @@ async def list_salaries(
     cursor = salary_coll.find(query, limit=limit)
     return [SalaryRecordModel(**doc) async for doc in cursor]
 
-
+# List salaries for a specific job title
 @app.get("/salaries/{job_title}", response_model=List[SalaryRecordModel])
 async def list_salaries_by_title(
     job_title: str
@@ -66,6 +70,7 @@ async def list_salaries_by_title(
         raise HTTPException(404, f"No salary records for job_title={job_title}")
     return docs
 
+# Get counts of each experience level for a given job title
 @app.get("/salaries/{job_title}/experience_levels", response_model=Dict[str, int])
 async def experience_level_stats(job_title: str):
     pipeline = [
@@ -83,7 +88,7 @@ async def experience_level_stats(job_title: str):
 
     return stats
 
-
+# List salaries by job title and experience level
 @app.get("/salaries/{job_title}/{experience_level}", response_model=List[SalaryRecordModel])
 async def salaries_by_title_level(job_title: str, experience_level: str):
     query = {"job_title": job_title, "experience_level": experience_level}
@@ -96,7 +101,7 @@ async def salaries_by_title_level(job_title: str, experience_level: str):
         )
     return docs
 
-
+# Get number of records per company location
 @app.get("/salary_location", response_model=LocationOverview)
 async def location_overview():
     pipeline = [
@@ -114,6 +119,7 @@ async def location_overview():
         "locations": loc_dict,
     }
 
+# List salaries filtered by company location
 @app.get("/salary_location/{company_location}", response_model=List[SalaryRecordModel])
 async def salaries_by_location(company_location: str):
     cursor = (
@@ -125,6 +131,7 @@ async def salaries_by_location(company_location: str):
         raise HTTPException(404, f"No salary records for company_location='{company_location}'")
     return docs
 
+# List salaries by company location and job title
 @app.get(
     "/salary_location/{company_location}/{job_title}",
     response_model=List[SalaryRecordModel],
@@ -143,6 +150,7 @@ async def salaries_by_location_title(company_location: str, job_title: str):
         )
     return docs
 
+# Get average salary per job title
 @app.get("/avg_salaries", response_model=Dict[str, float])
 async def average_salary_by_title():
     pipeline = [
@@ -165,6 +173,7 @@ async def average_salary_by_title():
     
     return JSONResponse(content=result)
 
+# Get average salary by experience level for a job title
 @app.get("/avg_salaries/{job_title}", response_model=Dict[str, float])
 async def avg_salary_by_experience_level(job_title: str):
     pipeline = [
@@ -188,6 +197,7 @@ async def avg_salary_by_experience_level(job_title: str):
 
     return result
 
+# Get all TFT prediction records
 @app.get(
     "/tft_predictions",
     response_model=List[PredictionModel],
@@ -207,6 +217,7 @@ async def get_all_tft_predictions():
     return docs
 
 
+# Get average salary by year and experience level for a job title (excluding 2025)
 @app.get(
     "/avg_sal_by_year/{job_title}",
     response_model=Dict[int, Dict[str, float]],
