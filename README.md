@@ -1,6 +1,21 @@
 # team03hw:Job Salaries Analyze
+## Description
+This repository contains the implementation of Job Salaries Analyze, a visual analytics platform designed to forecast future salaries and uncover key influencing factors in the data science job market. Our system combines state-of-the-art time-series forecasting using the Temporal Fusion Transformer (TFT) with interactive visualizations built in React.js and D3.js to deliver an informative and intuitive experience for job seekers and career planners.
 
-First,make sure you have the respective packages installed by this command.
+Traditional salary platforms focus only on historical averages and lack predictive capabilities. Our system addresses this gap by providing dynamic predictions for salaries in 2025 and 2026, leveraging data from 2020–2024. The platform supports exploration by job title, experience level, location, and more—enabling users to understand trends, compare roles across regions, and identify growth opportunities.
+
+Users begin with an overview bar chart of median salaries by role, then drill into details via a choropleth map (regional comparisons), heatmap (experience vs. region), line chart (salary trends), and pie chart (feature importance from TFT). All views are interlinked, allowing seamless exploration of salary dynamics. In addition to accurate forecasting, we emphasize model interpretability by showing how different input features influence predictions.
+
+This project empowers individuals to make informed career decisions through transparent AI-driven forecasting and engaging visual storytelling.
+## Installation
+You should get the install and set up the code as following:
+
+### Clone the Repository
+```bash
+git clone https://github.com/Huangzhuol/team03hw.git
+cd team03hw
+```
+### Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
@@ -8,8 +23,21 @@ If you still have problem like that "ImportError: cannot import name 'AutoML' fr
 ```bash
 pip install "flaml[automl]"
 ```
+### Dataset
+Our project has included the dataset in `data/salaries.csv`
 
-## Model(src foler)
+
+This dataset is not only used for the data import function of the backend's `import.py`,but also for the algorithm part.
+
+The `main.py` use the dataset to generate `attention_summary.csv`,`decoder_variable_importances.csv`,`encoder_variable_importances.csv` and `static_variable_importances.csv` in total 4 weight csv documents. `TFT_Predictions.csv` is also based on it.
+
+The `test.py` use the dataset to generate `TFTtest_Predictions.csv`.
+
+
+Our dataset is based on: https://www.kaggle.com/datasets/samithsachidanandan/the-global-ai-ml-data-science-salary-for-2025
+
+## Execution
+### Model(src foler)
 | File Name                | Description                                                               |
 |--------------------------|---------------------------------------------------------------------------|
 | autoLM_data_preprocess.py | Return filtered_salaries.csv for AutoLM evaluation.                      |
@@ -18,7 +46,7 @@ pip install "flaml[automl]"
 | test.py                  | Return MAE, RMSE, and SMAPE of prediction 2025 data as TFT evaluation.    |
 
 ---
-### Quick Start
+#### Quick Start
 ```bash
 python autoLM_data_preprocess.py
 python autoLM_test.py
@@ -27,8 +55,8 @@ python test.py
 ```
 
 reference LINK:https://pytorch-forecasting.readthedocs.io/en/latest/tutorials/stallion.html#Interpret-model
-## Backend
-### Quick Start
+### Backend
+#### Quick Start
 
 ```bash
 # before that you need to intall the requirements.txt
@@ -45,7 +73,7 @@ The API will be live at [**http://127.0.0.1:8000**](http://127.0.0.1:8000).
 
 ---
 
-### Endpoint Reference
+#### Endpoint Reference
 
 | Method | Path                 | Description                            |
 | ------ | -------------------- | -------------------------------------- |
@@ -66,7 +94,7 @@ The API will be live at [**http://127.0.0.1:8000**](http://127.0.0.1:8000).
 
 > Replace `{dataset}` with one of the names listed below.
 
-## Available Datasets
+### Available Datasets
 
 Currently shipped datasets:
 
@@ -81,7 +109,7 @@ Currently shipped datasets:
 ---
 > Replace `{job_title}` with one of the names listed below.
 
-## Available job_title
+### Available job_title
 1. Data Analyst
 
 2. Data Analytics Manager
@@ -103,9 +131,9 @@ Currently shipped datasets:
 ---
 
 > Replace `{experience_level}` with one of the names listed below.
-#### Tips: not every job_title has all of the experience_level below. Check with api GET "/salaries/{job_title}/experience_levels" first before you call it.
+##### Tips: not every job_title has all of the experience_level below. Check with api GET "/salaries/{job_title}/experience_levels" first before you call it.
 
-## Available experience_level
+### Available experience_level
 1. Entry
 
 2. Mid
@@ -114,8 +142,8 @@ Currently shipped datasets:
 
 4. Executive
 
-## Frontend
-### Quick Start
+### Frontend
+#### Quick Start
 ```bash
 cd client
 
